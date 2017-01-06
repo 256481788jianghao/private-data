@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script>
+    //计算分期手续费与拟合年利率的关系
+    function debug(str){
+        console.log(str);
+    }
+
+    //计算在月利率x的前提下，初始本金为baseMoney，服务费为serviceCharge，经过N月后，剩余的钱
+    function leftMoneyAfterN(N,baseMoney,serviceCharge,baseMoneyBack,x){
+        var left = -10;
+        if(N == 0){
+            left = baseMoney;
+        }else{
+            left = leftMoneyAfterN(N-1,baseMoney,serviceCharge,baseMoneyBack,x)*(1+x)-serviceCharge-baseMoneyBack;
+        }
+        debug("after N="+N+" left="+left);
+        return left;
+    }
+    //从x0开始，以步长step,寻找最小的x,并返回拟合年率
+    function findX(N,baseMoney,serviceCharge,x0,step){
+        var left = -10;
+        var startX = x0;
+        while(left < 0){
+            left = leftMoneyAfterN(N,baseMoney,serviceCharge,baseMoney/N,startX);
+            startX += step;
+        }
+        return Math.pow(1+startX,12)-1;
+    }
+    debug("x = "+findX(24,39000,292.5,0.01,0.0001));
+</script>
+</body>
+</html>
